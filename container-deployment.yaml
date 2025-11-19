@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-processing-container
+  labels:
+    app: image-processing-container
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-processing-container
+  template:
+    metadata:
+      labels:
+        app: image-processing-container
+    spec:
+      containers:
+      - name: image-processing
+        image: stav1212/image_processing:v51
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2"
+          limits:
+            cpu: "2" 
+            memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-processing-container-service
+  labels:
+    app: image-processing-container  
+spec:
+  selector:
+    app: image-processing-container
+  ports:
+  - name: web
+    port: 80
+    targetPort: 8080
+    nodePort: 31397
+  type: NodePort
